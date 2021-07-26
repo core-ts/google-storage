@@ -1,0 +1,30 @@
+{
+  "name": "google-storage",
+  "version": "0.0.2",
+  "description": "google-storage",
+  "main": "./lib/index.js",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build:lib": "tsc",
+    "clean:lib": "rimraf lib"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^5.8.5"
+  },
+  "devDependencies": {
+    "tslint": "5.10.0",
+    "typescript": "^3.8.3"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/core-ts/google-storage"
+  },
+  "keywords": [
+    "storage",
+    "google-storage",
+    "google storage"
+  ]
+}
