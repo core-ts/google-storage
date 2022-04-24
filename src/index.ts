@@ -71,8 +71,8 @@ export const map: StringMap = {
   naplps: 'image/naplps',
 };
 export interface StorageService {
-  upload(directory: string, name: string, data: string | Buffer): Promise<string>;
-  delete(directory: string, name: string): Promise<boolean>;
+  upload(data: string | Buffer, name: string, directory?: string): Promise<string>;
+  delete(name: string, directory?: string): Promise<boolean>;
 }
 export function getPublicUrl(bucketName: string, filename: string): string {
   return `https://storage.googleapis.com/${bucketName}/${filename}`;
@@ -84,7 +84,7 @@ export class GoogleStorageService implements StorageService {
     this.upload = this.upload.bind(this);
     this.delete = this.delete.bind(this);
   }
-  upload(directory: string, name: string, data: string | Buffer): Promise<string> {
+  upload(data: string | Buffer, name: string, directory?: string): Promise<string> {
     let key = name;
     if (directory && directory.length > 0) {
       key = directory + '/' + name;
@@ -134,7 +134,7 @@ export class GoogleStorageService implements StorageService {
       });
     });
   }
-  delete(directory: string, filename: string): Promise<boolean> {
+  delete(filename: string, directory?: string): Promise<boolean> {
     let key = filename;
     if (directory && directory.length > 0) {
       key = directory + '/' + filename;
