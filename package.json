@@ -8,10 +8,8 @@
     "build:lib": "tsc",
     "clean:lib": "rimraf lib"
   },
-  "dependencies": {
-    "@google-cloud/storage": "^5.8.5"
-  },
   "devDependencies": {
+    "@google-cloud/storage": "^5.8.5",
     "tslint": "5.10.0",
     "typescript": "^3.8.3"
   },

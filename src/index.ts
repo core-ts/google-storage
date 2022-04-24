@@ -70,6 +70,10 @@ export const map: StringMap = {
   ktx2: 'image/ktx2',
   naplps: 'image/naplps',
 };
+export interface StorageRepository {
+  upload(data: string | Buffer, name: string, directory?: string): Promise<string>;
+  delete(name: string, directory?: string): Promise<boolean>;
+}
 export interface StorageService {
   upload(data: string | Buffer, name: string, directory?: string): Promise<string>;
   delete(name: string, directory?: string): Promise<boolean>;
@@ -105,12 +109,12 @@ export class GoogleStorageService implements StorageService {
     }
     return new Promise<string>((resolve, reject) => {
       const object = this.bucket.file(key);
-      object.save(data, { metadata }, (er1) => {
+      object.save(data, { metadata }, (er1: any) => {
         if (er1) {
           return reject(er1);
         }
         if (this.config.public) {
-          object.makePublic((er2) => {
+          object.makePublic((er2: any) => {
             if (er2) {
               return reject(er2);
             }
@@ -122,7 +126,7 @@ export class GoogleStorageService implements StorageService {
               entity: 'allAuthenticatedUsers',
               role: 'READER',
             },
-            (err, acl, resp) => {
+            (err: any, acl: any, resp: any) => {
               if (err) {
                 return reject(err);
               } else {
@@ -141,7 +145,7 @@ export class GoogleStorageService implements StorageService {
     }
     const object = this.bucket.file(key);
     return new Promise<boolean>((resolve, reject) => {
-      object.delete((err) => {
+      object.delete((err: any) => {
         if (err) {
           return reject(err);
         }
@@ -149,4 +153,10 @@ export class GoogleStorageService implements StorageService {
       });
     });
   }
+}
+export class GoogleStorageRepository extends GoogleStorageService implements StorageRepository {
+}
+export function deleteFile(delFile: (name: string, directory?: string) => Promise<boolean>, url: string): Promise<boolean> {
+  const fileName = url.split('/') ?? [];
+  return delFile(fileName[fileName.length - 1] ?? '', fileName[fileName.length - 2] ?? '');
 }
