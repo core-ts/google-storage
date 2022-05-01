@@ -78,6 +78,10 @@ export interface StorageService {
   upload(data: string | Buffer, name: string, directory?: string): Promise<string>;
   delete(name: string, directory?: string): Promise<boolean>;
 }
+export interface Storage {
+  upload(data: string | Buffer, name: string, directory?: string): Promise<string>;
+  delete(name: string, directory?: string): Promise<boolean>;
+}
 export function getPublicUrl(bucketName: string, filename: string): string {
   return `https://storage.googleapis.com/${bucketName}/${filename}`;
 }
@@ -154,9 +158,30 @@ export class GoogleStorageService implements StorageService {
     });
   }
 }
+// tslint:disable-next-line:max-classes-per-file
 export class GoogleStorageRepository extends GoogleStorageService implements StorageRepository {
 }
-export function deleteFile(delFile: (name: string, directory?: string) => Promise<boolean>, url: string): Promise<boolean> {
+export type DeleteFile = (name: string, directory?: string) => Promise<boolean>;
+export type Delete = (delFile: DeleteFile, url: string) => Promise<boolean>;
+export type BuildUrl = (name: string, directory?: string) => string;
+export function deleteFile(delFile: DeleteFile, url: string): Promise<boolean> {
   const fileName = url.split('/') ?? [];
   return delFile(fileName[fileName.length - 1] ?? '', fileName[fileName.length - 2] ?? '');
+}
+// tslint:disable-next-line:max-classes-per-file
+export class UrlBuilder {
+  constructor(public bucket: string) {
+    this.build = this.build.bind(this);
+  }
+  build(name: string, directory?: string): string {
+    let key = name;
+    if (directory && directory.length > 0) {
+      key = directory + '/' + name;
+    }
+    return `https://storage.googleapis.com/${this.bucket}/${key}`;
+  }
+}
+export function useBuildUrl(bucket: string): BuildUrl {
+  const builder = new UrlBuilder(bucket);
+  return builder.build;
 }

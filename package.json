@@ -1,6 +1,6 @@
 {
   "name": "google-storage",
-  "version": "0.0.2",
+  "version": "0.0.7",
   "description": "google-storage",
   "main": "./lib/index.js",
   "types": "./src/index.ts",
